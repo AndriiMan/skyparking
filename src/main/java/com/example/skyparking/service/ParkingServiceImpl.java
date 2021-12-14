@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Math.abs;
 
 @Service
-public class ParkingServiceImpl {
+public class ParkingServiceImpl implements ParkingService{
 
     final TerminalRepository terminalRepository;
 

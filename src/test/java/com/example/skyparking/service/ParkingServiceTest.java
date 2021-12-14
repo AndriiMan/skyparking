@@ -12,9 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
 
 class ParkingServiceTest {
 
@@ -53,7 +51,7 @@ class ParkingServiceTest {
         Calendar c = Calendar.getInstance();
         c.setTime(sdf.parse(dt));
         c.add(Calendar.MINUTE, -1);
-        dt = sdf.format(c.getTime()); 
+        dt = sdf.format(c.getTime());
 
         String talonTime = dt;;
         int expected = 1;

@@ -26,7 +26,11 @@ public class Talon {
 
     private String timeIn;
 
+    private double priceSum;
+
     boolean isActive;
+
+    boolean isVip;
 
     public Talon() {
         this.timeIn = getCurrentTime();
