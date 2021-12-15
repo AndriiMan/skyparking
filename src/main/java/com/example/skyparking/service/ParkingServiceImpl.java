@@ -1,11 +1,12 @@
 package com.example.skyparking.service;
 
+import com.example.skyparking.TimeCounter;
 import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
-import com.example.skyparking.entity.Terminal;
+import com.example.skyparking.entity.Machine;
 import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
-import com.example.skyparking.repository.TerminalRepository;
+import com.example.skyparking.repository.MachineRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -20,58 +21,57 @@ import static java.lang.Math.abs;
 @Service
 public class ParkingServiceImpl implements ParkingService {
 
-    final TerminalRepository terminalRepository;
+    final MachineRepository machineRepository;
 
     final TalonRepository talonRepository;
 
     final PriceForTalonsRepository priceForTalonsRepository;
 
-    public ParkingServiceImpl(TerminalRepository terminalRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository) {
-        this.terminalRepository = terminalRepository;
+    public ParkingServiceImpl(MachineRepository machineRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository) {
+        this.machineRepository = machineRepository;
         this.talonRepository = talonRepository;
         this.priceForTalonsRepository = priceForTalonsRepository;
     }
 
     public void createTalon(String terminalName) {
-        PriceForTalons priceForTalons1 = new PriceForTalons(60, 50, 300, 500);
+        if (machineRepository.findByName(terminalName) != null) {
+            Machine machine = machineRepository.findByName(terminalName);
+            List<Talon> talonList = machine.getTalonList();
+            PriceForTalons newPriceForTalons = machine.getPriceForTalons();
 
-        if (terminalRepository.findByName(terminalName) != null) {
-            Terminal terminal = terminalRepository.findByName(terminalName);
-            terminal.setPriceForTalons(priceForTalons1);
-
-            List<Talon> talonList = terminal.getTalonList();
-
-            priceForTalons1.setTerminalsPrices(List.of(terminal));
-
-            createNewTalon(terminal, talonList, priceForTalons1);
+            createNewTalon(machine, talonList, newPriceForTalons);
         } else {
-            Terminal newTerminal = new Terminal(terminalName);
+            Machine newMachine = new Machine(terminalName);
             List<Talon> newTalonList = new ArrayList<>();
-            newTerminal.setPriceForTalons(priceForTalons1);
-            createNewTalon(newTerminal, newTalonList, priceForTalons1);
+            PriceForTalons newPriceForTalons = new PriceForTalons(60, 50, 300, 500);
+
+            createNewTalon(newMachine, newTalonList, newPriceForTalons);
         }
     }
 
-    private void createNewTalon(Terminal terminal, List<Talon> talonList, PriceForTalons priceForTalons1) {
-
+    private void createNewTalon(Machine machine, List<Talon> talonList, PriceForTalons priceForTalons) {
         Talon newTalon = new Talon();
-        // Terminal terminal1 = priceForTalons1.get(0);//TODO rewrite this if priceForTalons is null
+        List<Machine> machineList = new ArrayList<>();
+
         newTalon.setNumber((int) (Math.random() * (((Integer.MAX_VALUE - 1)) + 1) - 0));
         talonList.add(newTalon);
-        terminal.setPriceForTalons(priceForTalons1);
-        priceForTalons1.setTerminalsPrices(List.of(terminal));
-        terminal.setTalonList(talonList);
-        newTalon.setTerminal(terminal);
-        talonRepository.save(newTalon);
-        terminalRepository.save(terminal);
-        priceForTalonsRepository.save(priceForTalons1);
+        machine.setTalonList(talonList);
+        machineList.add(machine);
+        newTalon.setMachine(machine);
 
+        if (machine.getPriceForTalons() == null) {
+            machine.setPriceForTalons(priceForTalons);
+            priceForTalons.setTerminalsPrices(machineList);
+            priceForTalonsRepository.save(priceForTalons);
+        }
+        //talonRepository.save(newTalon);
+        machineRepository.save(machine);
     }
 
     public boolean checkTalonIsInMachine(int number) {
         boolean flg = false;
-        Terminal terminal = terminalRepository.findByName("termainal1");
-        List<Talon> talonList = terminal.getTalonList();
+        Machine machine = machineRepository.findByName("termainal1");
+        List<Talon> talonList = machine.getTalonList();
         for (Talon talon : talonList) {
             if (talon.getNumber() == number) {
                 flg = true;
@@ -82,9 +82,11 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     public String exitAndSum(int number) {
+        TimeCounter timeCounter = new TimeCounter();
         if (checkTalonIsInMachine(number)) {
             Talon talon = talonRepository.findByNumber(number);
-            return "null is"; //String.valueOf(countSum(String.valueOf(talon.getTimeIn())));
+            return String.valueOf(timeCounter.sumUpPrice(talon));
+            //return String.valueOf(countSum(String.valueOf(talon.getTimeIn())));
         } else {
             return "there is not talon in this terminal";
         }

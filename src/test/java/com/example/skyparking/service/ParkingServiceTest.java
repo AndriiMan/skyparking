@@ -1,9 +1,8 @@
 package com.example.skyparking.service;
 
-import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
-import com.example.skyparking.repository.TerminalRepository;
+import com.example.skyparking.repository.MachineRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,13 +18,13 @@ import java.util.Calendar;
 class ParkingServiceTest {
 
     @Mock
-    private TerminalRepository terminalRepository;
+    private MachineRepository machineRepository;
     @Mock
     private TalonRepository talonRepository;
     @Mock
     private PriceForTalonsRepository priceForTalonsRepository;
 
-    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(terminalRepository, talonRepository, priceForTalonsRepository);
+    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(machineRepository, talonRepository, priceForTalonsRepository);
 
     @Test
     void countSum() {

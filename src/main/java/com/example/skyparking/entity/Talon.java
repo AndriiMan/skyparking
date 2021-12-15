@@ -20,7 +20,7 @@ public class Talon {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "machine_id")
-    private Terminal terminal;
+    private Machine machine;
 
     private int number;
 
@@ -37,8 +37,8 @@ public class Talon {
         this.isActive = true;
     }
 
-    public Talon(Terminal terminal) {
-        this.terminal = terminal;
+    public Talon(Machine machine) {
+        this.machine = machine;
         this.timeIn = getCurrentTime();
         this.isActive = true;
     }
