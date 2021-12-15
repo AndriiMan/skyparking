@@ -1,5 +1,7 @@
 package com.example.skyparking.service;
 
+import com.example.skyparking.entity.PriceForTalons;
+import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import com.example.skyparking.repository.TerminalRepository;
 import org.junit.jupiter.api.Assertions;
@@ -20,8 +22,10 @@ class ParkingServiceTest {
     private TerminalRepository terminalRepository;
     @Mock
     private TalonRepository talonRepository;
+    @Mock
+    private PriceForTalonsRepository priceForTalonsRepository;
 
-    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(terminalRepository, talonRepository);
+    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(terminalRepository, talonRepository, priceForTalonsRepository);
 
     @Test
     void countSum() {
@@ -53,7 +57,8 @@ class ParkingServiceTest {
         c.add(Calendar.MINUTE, -1);
         dt = sdf.format(c.getTime());
 
-        String talonTime = dt;;
+        String talonTime = dt;
+        ;
         int expected = 1;
 
         int actual = parkingServiceImpl.countSum(talonTime, 1);

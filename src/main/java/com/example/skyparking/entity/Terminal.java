@@ -16,7 +16,9 @@ public class Terminal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int pricePerHour;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "price_list_id")
+    private PriceForTalons priceForTalons;
 
     private String name;
 
@@ -31,8 +33,7 @@ public class Terminal {
 
     }
 
-    public Terminal(int pricePerHour, String name) {
-        this.pricePerHour = pricePerHour;
+    public Terminal(String name) {
         this.name = name;
     }
 

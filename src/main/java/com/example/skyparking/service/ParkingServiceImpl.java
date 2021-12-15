@@ -1,7 +1,9 @@
 package com.example.skyparking.service;
 
+import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.entity.Terminal;
+import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import com.example.skyparking.repository.TerminalRepository;
 import lombok.SneakyThrows;
@@ -10,46 +12,60 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.abs;
 
 @Service
-public class ParkingServiceImpl implements ParkingService{
+public class ParkingServiceImpl implements ParkingService {
 
     final TerminalRepository terminalRepository;
 
     final TalonRepository talonRepository;
 
-    public ParkingServiceImpl(TerminalRepository terminalRepository, TalonRepository talonRepository) {
+    final PriceForTalonsRepository priceForTalonsRepository;
+
+    public ParkingServiceImpl(TerminalRepository terminalRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository) {
         this.terminalRepository = terminalRepository;
         this.talonRepository = talonRepository;
+        this.priceForTalonsRepository = priceForTalonsRepository;
     }
 
     public void createTalon(String terminalName) {
+        PriceForTalons priceForTalons1 = new PriceForTalons(60, 50, 300, 500);
+
         if (terminalRepository.findByName(terminalName) != null) {
             Terminal terminal = terminalRepository.findByName(terminalName);
+            terminal.setPriceForTalons(priceForTalons1);
+
             List<Talon> talonList = terminal.getTalonList();
-            createNewTalon(terminal, talonList);
+
+            priceForTalons1.setTerminalsPrices(List.of(terminal));
+
+            createNewTalon(terminal, talonList, priceForTalons1);
         } else {
-            Terminal newTerminal = new Terminal(30, terminalName);
+            Terminal newTerminal = new Terminal(terminalName);
             List<Talon> newTalonList = new ArrayList<>();
-            createNewTalon(newTerminal, newTalonList);
+            newTerminal.setPriceForTalons(priceForTalons1);
+            createNewTalon(newTerminal, newTalonList, priceForTalons1);
         }
     }
 
-    private void createNewTalon(Terminal terminal, List<Talon> talonList) {
-        Talon newTalon2 = new Talon();
-        newTalon2.setNumber((int) (Math.random() * (((Integer.MAX_VALUE - 1)) + 1) - 0));
-        talonList.add(newTalon2);
+    private void createNewTalon(Terminal terminal, List<Talon> talonList, PriceForTalons priceForTalons1) {
+
+        Talon newTalon = new Talon();
+        // Terminal terminal1 = priceForTalons1.get(0);//TODO rewrite this if priceForTalons is null
+        newTalon.setNumber((int) (Math.random() * (((Integer.MAX_VALUE - 1)) + 1) - 0));
+        talonList.add(newTalon);
+        terminal.setPriceForTalons(priceForTalons1);
+        priceForTalons1.setTerminalsPrices(List.of(terminal));
         terminal.setTalonList(talonList);
-        newTalon2.setTerminal(terminal);
-        talonRepository.save(newTalon2);
+        newTalon.setTerminal(terminal);
+        talonRepository.save(newTalon);
         terminalRepository.save(terminal);
+        priceForTalonsRepository.save(priceForTalons1);
+
     }
 
     public boolean checkTalonIsInMachine(int number) {
@@ -68,7 +84,7 @@ public class ParkingServiceImpl implements ParkingService{
     public String exitAndSum(int number) {
         if (checkTalonIsInMachine(number)) {
             Talon talon = talonRepository.findByNumber(number);
-            return String.valueOf(countSum(String.valueOf(talon.getTimeIn()), talon.getTerminal().getPricePerHour()));
+            return "null is"; //String.valueOf(countSum(String.valueOf(talon.getTimeIn())));
         } else {
             return "there is not talon in this terminal";
         }
