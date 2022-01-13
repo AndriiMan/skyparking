@@ -1,5 +1,6 @@
 package com.example.skyparking.service;
 
+import com.example.skyparking.repository.ClientRepository;
 import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import com.example.skyparking.repository.MachineRepository;
@@ -16,7 +17,6 @@ import java.util.Calendar;
 
 
 class ParkingServiceTest {
-
     @Mock
     private MachineRepository machineRepository;
     @Mock
@@ -24,7 +24,10 @@ class ParkingServiceTest {
     @Mock
     private PriceForTalonsRepository priceForTalonsRepository;
 
-    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(machineRepository, talonRepository, priceForTalonsRepository);
+    @Mock
+    private ClientRepository clientRepository;
+
+    ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(machineRepository, talonRepository, priceForTalonsRepository, clientRepository);
 
     @Test
     void countSum() {
@@ -77,4 +80,5 @@ class ParkingServiceTest {
 
         Assertions.assertEquals(expected, actual);
     }
+
 }

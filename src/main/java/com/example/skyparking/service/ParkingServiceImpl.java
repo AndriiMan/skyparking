@@ -4,6 +4,7 @@ import com.example.skyparking.TimeCounter;
 import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.entity.Machine;
+import com.example.skyparking.repository.ClientRepository;
 import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import com.example.skyparking.repository.MachineRepository;
@@ -27,10 +28,14 @@ public class ParkingServiceImpl implements ParkingService {
 
     final PriceForTalonsRepository priceForTalonsRepository;
 
-    public ParkingServiceImpl(MachineRepository machineRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository) {
+    final ClientRepository clientRepository;
+
+    public ParkingServiceImpl(MachineRepository machineRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository,
+                              ClientRepository clientRepository) {
         this.machineRepository = machineRepository;
         this.talonRepository = talonRepository;
         this.priceForTalonsRepository = priceForTalonsRepository;
+        this.clientRepository = clientRepository;
     }
 
     public void createTalon(String terminalName) {
@@ -66,6 +71,7 @@ public class ParkingServiceImpl implements ParkingService {
         }
         //talonRepository.save(newTalon);
         machineRepository.save(machine);
+
     }
 
     public boolean checkTalonIsInMachine(int number) {
@@ -85,6 +91,8 @@ public class ParkingServiceImpl implements ParkingService {
         TimeCounter timeCounter = new TimeCounter();
         if (checkTalonIsInMachine(number)) {
             Talon talon = talonRepository.findByNumber(number);
+            talon.setActive(false);
+            talonRepository.save(talon);
             return String.valueOf(timeCounter.sumUpPrice(talon));
             //return String.valueOf(countSum(String.valueOf(talon.getTimeIn())));
         } else {
