@@ -9,5 +9,4 @@ class SkyparkingApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

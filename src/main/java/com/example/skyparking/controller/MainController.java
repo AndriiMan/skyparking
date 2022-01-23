@@ -26,9 +26,9 @@ public class MainController {
     //@PostMapping("/createTalon")
     @ResponseBody
     @RequestMapping(value = "/createTalon", method = RequestMethod.POST)
-    public ResponseEntity<String> createTalon() {
+    public ResponseEntity<String> createTalon(@RequestParam String terminalName) {
         try {
-            parkingServiceImpl.createTalon("termainal1");
+            parkingServiceImpl.createTalon(terminalName);
             return new ResponseEntity<>("CREATED", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -40,7 +40,7 @@ public class MainController {
     public ResponseEntity<String> checkTalon(@RequestParam int number) {
         try {
             String s = String.valueOf(parkingServiceImpl.exitAndSum(number));
-            return new ResponseEntity<>(s, HttpStatus.CREATED);
+            return new ResponseEntity<>(s, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

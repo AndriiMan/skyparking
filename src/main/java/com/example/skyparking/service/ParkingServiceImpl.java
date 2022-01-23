@@ -30,48 +30,26 @@ public class ParkingServiceImpl implements ParkingService {
 
     final ClientRepository clientRepository;
 
+    MachineServiceImpl machineService;
+
     public ParkingServiceImpl(MachineRepository machineRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository,
                               ClientRepository clientRepository) {
         this.machineRepository = machineRepository;
         this.talonRepository = talonRepository;
         this.priceForTalonsRepository = priceForTalonsRepository;
         this.clientRepository = clientRepository;
+        this.machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
     }
 
-    public void createTalon(String terminalName) {
-        if (machineRepository.findByName(terminalName) != null) {
-            Machine machine = machineRepository.findByName(terminalName);
-            List<Talon> talonList = machine.getTalonList();
-            PriceForTalons newPriceForTalons = machine.getPriceForTalons();
-
-            createNewTalon(machine, talonList, newPriceForTalons);
-        } else {
-            Machine newMachine = new Machine(terminalName);
-            List<Talon> newTalonList = new ArrayList<>();
-            PriceForTalons newPriceForTalons = new PriceForTalons(60, 50, 300, 500);
-
-            createNewTalon(newMachine, newTalonList, newPriceForTalons);
-        }
-    }
-
-    private void createNewTalon(Machine machine, List<Talon> talonList, PriceForTalons priceForTalons) {
+    //TODO experement with delete newTalon.setMachine(machine);
+    public void createTalon(String terminal) {
+        Machine machine = machineService.createMachine(terminal);
+        List<Talon> talonList = machine.getTalonList();
         Talon newTalon = new Talon();
-        List<Machine> machineList = new ArrayList<>();
-
         newTalon.setNumber((int) (Math.random() * (((Integer.MAX_VALUE - 1)) + 1) - 0));
         talonList.add(newTalon);
-        machine.setTalonList(talonList);
-        machineList.add(machine);
         newTalon.setMachine(machine);
-
-        if (machine.getPriceForTalons() == null) {
-            machine.setPriceForTalons(priceForTalons);
-            priceForTalons.setTerminalsPrices(machineList);
-            priceForTalonsRepository.save(priceForTalons);
-        }
-        //talonRepository.save(newTalon);
-        machineRepository.save(machine);
-
+        talonRepository.save(newTalon);
     }
 
     public boolean checkTalonIsInMachine(int number) {
@@ -94,7 +72,6 @@ public class ParkingServiceImpl implements ParkingService {
             talon.setActive(false);
             talonRepository.save(talon);
             return String.valueOf(timeCounter.sumUpPrice(talon));
-            //return String.valueOf(countSum(String.valueOf(talon.getTimeIn())));
         } else {
             return "there is not talon in this terminal";
         }
@@ -107,6 +84,7 @@ public class ParkingServiceImpl implements ParkingService {
         return abs((int) (pricePerHour * (subTwoDate(currentTime, talonTime))));
     }
 
+    //TODO my exeption for data
     @SneakyThrows
     public long subTwoDate(String date1, String date2) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);

@@ -1,7 +1,6 @@
 package com.example.skyparking;
 
 import com.example.skyparking.entity.Talon;
-import lombok.SneakyThrows;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -24,26 +23,39 @@ public class CountTalonTime {
         return abs((int) (pricePerHour * (subTwoDate(currentTime, talonTime))));
     }
 
-    @SneakyThrows
     public long subTwoDate(String date1, String date2) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
-        Date firstDate = sdf.parse(date1);
-        Date secondDate = sdf.parse(date2);
-        long diff = secondDate.getTime() - firstDate.getTime();
-        TimeUnit time = TimeUnit.MINUTES;
+        TimeUnit time = null;
+        long diff = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
+            Date firstDate = sdf.parse(date1);
+            Date secondDate = sdf.parse(date2);
+            diff = secondDate.getTime() - firstDate.getTime();
+            time = TimeUnit.MINUTES;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return time.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    @SneakyThrows
+
     public int subDate(String date1) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-        LocalDateTime timeForNow = LocalDateTime.now();
-        String currentTime = dateTimeFormatter.format(timeForNow);
-        Date firstDate = sdf.parse(date1);
-        Date secondDate = sdf.parse(currentTime);
-        long diff = secondDate.getTime() - firstDate.getTime();
-        TimeUnit time = TimeUnit.MINUTES;
+        long diff = 0;
+        TimeUnit time = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+            LocalDateTime timeForNow = LocalDateTime.now();
+            String currentTime = dateTimeFormatter.format(timeForNow);
+            Date firstDate = sdf.parse(date1);
+            Date secondDate = sdf.parse(currentTime);
+            diff = secondDate.getTime() - firstDate.getTime();
+            time = TimeUnit.MINUTES;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return (int) time.convert(diff, TimeUnit.MILLISECONDS);
     }
 }
