@@ -8,9 +8,12 @@ import com.example.skyparking.repository.ClientRepository;
 import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import com.example.skyparking.repository.MachineRepository;
+import com.example.skyparking.rules.RuleTime;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,27 +25,26 @@ import static java.lang.Math.abs;
 @Service
 public class ParkingServiceImpl implements ParkingService {
 
-    final MachineRepository machineRepository;
-
     final TalonRepository talonRepository;
 
     final PriceForTalonsRepository priceForTalonsRepository;
 
     final ClientRepository clientRepository;
 
-    MachineServiceImpl machineService;
+    final MachineServiceImpl machineService;
 
-    public ParkingServiceImpl(MachineRepository machineRepository, TalonRepository talonRepository, PriceForTalonsRepository priceForTalonsRepository,
-                              ClientRepository clientRepository) {
-        this.machineRepository = machineRepository;
+    public ParkingServiceImpl(
+            TalonRepository talonRepository,
+            PriceForTalonsRepository priceForTalonsRepository,
+            ClientRepository clientRepository,
+            MachineServiceImpl machineService) {
         this.talonRepository = talonRepository;
         this.priceForTalonsRepository = priceForTalonsRepository;
         this.clientRepository = clientRepository;
-        this.machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
+        this.machineService = machineService;
     }
 
-    //TODO experement with delete newTalon.setMachine(machine);
-    public void createTalon(String terminal) {
+    public Talon createTalon(String terminal) {
         Machine machine = machineService.createMachine(terminal);
         List<Talon> talonList = machine.getTalonList();
         Talon newTalon = new Talon();
@@ -50,24 +52,13 @@ public class ParkingServiceImpl implements ParkingService {
         talonList.add(newTalon);
         newTalon.setMachine(machine);
         talonRepository.save(newTalon);
+
+        return newTalon;
     }
 
-    public boolean checkTalonIsInMachine(int number) {
-        boolean flg = false;
-        Machine machine = machineRepository.findByName("termainal1");
-        List<Talon> talonList = machine.getTalonList();
-        for (Talon talon : talonList) {
-            if (talon.getNumber() == number) {
-                flg = true;
-                break;
-            }
-        }
-        return flg;
-    }
-
-    public String exitAndSum(int number) {
+    public String exitAndSum(int number, String machine) {
         TimeCounter timeCounter = new TimeCounter();
-        if (checkTalonIsInMachine(number)) {
+        if (machineService.checkTalonIsInMachine(number, machine)) {
             Talon talon = talonRepository.findByNumber(number);
             talon.setActive(false);
             talonRepository.save(talon);
@@ -77,21 +68,4 @@ public class ParkingServiceImpl implements ParkingService {
         }
     }
 
-    public int countSum(String talonTime, int pricePerHour) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-        LocalDateTime timeForNow = LocalDateTime.now();
-        String currentTime = dateTimeFormatter.format(timeForNow);
-        return abs((int) (pricePerHour * (subTwoDate(currentTime, talonTime))));
-    }
-
-    //TODO my exeption for data
-    @SneakyThrows
-    public long subTwoDate(String date1, String date2) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
-        Date firstDate = sdf.parse(date1);
-        Date secondDate = sdf.parse(date2);
-        long diff = secondDate.getTime() - firstDate.getTime();
-        TimeUnit time = TimeUnit.MINUTES;
-        return time.convert(diff, TimeUnit.MILLISECONDS);
-    }
 }

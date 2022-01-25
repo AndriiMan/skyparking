@@ -1,19 +1,21 @@
 package com.example.skyparking.controller;
 
+import com.example.skyparking.service.MachineServiceImpl;
 import com.example.skyparking.service.ParkingServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
 
-    private final ParkingServiceImpl parkingServiceImpl;
+    final ParkingServiceImpl parkingServiceImpl;
+    final MachineServiceImpl machineService;
 
-    public MainController(ParkingServiceImpl parkingServiceImpl) {
+    public MainController(ParkingServiceImpl parkingServiceImpl, MachineServiceImpl machineService) {
         this.parkingServiceImpl = parkingServiceImpl;
+        this.machineService = machineService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -37,9 +39,9 @@ public class MainController {
 
     @RequestMapping(value = "/checkTalon", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> checkTalon(@RequestParam int number) {
+    public ResponseEntity<String> checkTalon(@RequestParam int number, String machineName) {
         try {
-            String s = String.valueOf(parkingServiceImpl.exitAndSum(number));
+            String s = String.valueOf(parkingServiceImpl.exitAndSum(number,machineName));
             return new ResponseEntity<>(s, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
