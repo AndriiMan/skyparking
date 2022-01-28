@@ -4,7 +4,6 @@ import com.example.skyparking.entity.Machine;
 import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.repository.MachineRepository;
-import com.example.skyparking.repository.PriceForTalonsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +13,9 @@ public class MachineServiceImpl implements MachineService {
 
     final MachineRepository machineRepository;
 
-    final PriceForTalonsRepository priceForTalonsRepository;
 
-    public MachineServiceImpl(MachineRepository machineRepository, PriceForTalonsRepository priceForTalonsRepository) {
+    public MachineServiceImpl(MachineRepository machineRepository) {
         this.machineRepository = machineRepository;
-        this.priceForTalonsRepository = priceForTalonsRepository;
     }
 
     @Override
@@ -27,6 +24,7 @@ public class MachineServiceImpl implements MachineService {
             return machineRepository.findByName(terminalName);
         } else {
             Machine machine = new Machine(terminalName);
+            // TODO: Make more flexibe? (1)
             PriceForTalons newPriceForTalons = new PriceForTalons(12, 12, 12, 12);
             machine.setPriceForTalons(newPriceForTalons);
             return machine;

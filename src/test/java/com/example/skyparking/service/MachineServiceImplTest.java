@@ -4,7 +4,6 @@ import com.example.skyparking.entity.Machine;
 import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.repository.MachineRepository;
-import com.example.skyparking.repository.PriceForTalonsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +19,6 @@ class MachineServiceImplTest {
     @Mock
     private MachineRepository machineRepository;
 
-    @Mock
-    private PriceForTalonsRepository priceForTalonsRepository;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -32,7 +28,7 @@ class MachineServiceImplTest {
     void createNewMachine() {
         // arrange
         String expected="testTermainal";
-        MachineService machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
+        MachineService machineService = new MachineServiceImpl(machineRepository);
         // act
         Machine machineTest = machineService.createMachine("testTermainal");
         // assert
@@ -43,7 +39,7 @@ class MachineServiceImplTest {
     void createMachineAndGetFromDB() {
         // arrange
         String expected="machineMock";
-        MachineService machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
+        MachineService machineService = new MachineServiceImpl(machineRepository);
         Machine machineMock = new Machine();
         machineMock.setName("machineMock");
         PriceForTalons newPriceForTalons = new PriceForTalons(12, 12, 12, 12);
@@ -60,7 +56,7 @@ class MachineServiceImplTest {
     @Test
     void checkTalonIsInMachine() {
         // arrange
-        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
+        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository);
         Machine machineMock = new Machine("testTermainalMock");
         PriceForTalons newPriceForTalons = new PriceForTalons(12, 12, 12, 12);
         machineMock.setId(1L);

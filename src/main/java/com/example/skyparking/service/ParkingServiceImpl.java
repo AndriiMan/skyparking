@@ -27,36 +27,30 @@ public class ParkingServiceImpl implements ParkingService {
 
     final TalonRepository talonRepository;
 
-    final PriceForTalonsRepository priceForTalonsRepository;
-
     final ClientRepository clientRepository;
 
     final MachineServiceImpl machineService;
 
     public ParkingServiceImpl(
             TalonRepository talonRepository,
-            PriceForTalonsRepository priceForTalonsRepository,
             ClientRepository clientRepository,
             MachineServiceImpl machineService) {
         this.talonRepository = talonRepository;
-        this.priceForTalonsRepository = priceForTalonsRepository;
         this.clientRepository = clientRepository;
         this.machineService = machineService;
     }
 
     public Talon createTalon(String terminal) {
         Machine machine = machineService.createMachine(terminal);
-        List<Talon> talonList = machine.getTalonList();
         Talon newTalon = new Talon();
         newTalon.setNumber((int) (Math.random() * (((Integer.MAX_VALUE - 1)) + 1) - 0));
-        talonList.add(newTalon);
         newTalon.setMachine(machine);
         talonRepository.save(newTalon);
 
         return newTalon;
     }
 
-    public String exitAndSum(int number, String machine) {
+    public String exit(int number, String machine) {
         TimeCounter timeCounter = new TimeCounter();
         if (machineService.checkTalonIsInMachine(number, machine)) {
             Talon talon = talonRepository.findByNumber(number);

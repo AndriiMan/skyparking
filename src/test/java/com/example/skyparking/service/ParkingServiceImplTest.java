@@ -5,7 +5,6 @@ import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.repository.ClientRepository;
 import com.example.skyparking.repository.MachineRepository;
-import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,19 +21,22 @@ class ParkingServiceImplTest {
 
     @Mock
     private TalonRepository talonRepository;
-    @Mock
-    private PriceForTalonsRepository priceForTalonsRepository;
+
     @Mock
     private ClientRepository clientRepository;
     @Mock
     private MachineRepository machineRepository;
+    private ParkingServiceImpl parkingServiceImpl;
+    private MachineServiceImpl machineService;
 
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        //TODO put when() to his own test, not BeforeEach, add test to machine service
+        machineService = new MachineServiceImpl(machineRepository);
+        parkingServiceImpl = new ParkingServiceImpl(talonRepository, clientRepository, machineService);
+
         //подумай над тим щоб логічно відділити класи
         //машини і талона(сервіси)
     }
@@ -43,9 +45,8 @@ class ParkingServiceImplTest {
     void createTalon() {
         // arrange
         String actual = "test";
-        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
-        ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(talonRepository,
-                priceForTalonsRepository, clientRepository, machineService);
+        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository);
+        ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(talonRepository, clientRepository, machineService);
         // act
         Talon talon = parkingServiceImpl.createTalon("test");
 
@@ -57,9 +58,7 @@ class ParkingServiceImplTest {
     void exitAndSumCorrectTalon() {
         // arrange
         String expected = "50.0";
-        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
-        ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(talonRepository,
-                priceForTalonsRepository, clientRepository, machineService);
+
         Talon talon1 = new Talon();
         talon1.setNumber(11111111);
         talon1.setActive(true);
@@ -77,7 +76,7 @@ class ParkingServiceImplTest {
         when(machineRepository.findByName("terminal1")).thenReturn(machine);
 
         // act
-        String actual = parkingServiceImpl.exitAndSum(11111111, "terminal1");
+        String actual = parkingServiceImpl.exit(11111111, "terminal1");
 
         // assert
         Assertions.assertEquals(expected, actual);
@@ -87,9 +86,8 @@ class ParkingServiceImplTest {
     void exitAndSumNotCorrectTalon() {
         // arrange
         String expected = "there is not talon in this terminal";
-        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository, priceForTalonsRepository);
-        ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(talonRepository,
-                priceForTalonsRepository, clientRepository, machineService);
+        MachineServiceImpl machineService = new MachineServiceImpl(machineRepository);
+        ParkingServiceImpl parkingServiceImpl = new ParkingServiceImpl(talonRepository, clientRepository, machineService);
         Talon talon1 = new Talon();
         talon1.setNumber(21111111);
         talon1.setActive(true);
@@ -107,7 +105,7 @@ class ParkingServiceImplTest {
         when(machineRepository.findByName("terminal1")).thenReturn(machine);
 
         // act
-        String actual = parkingServiceImpl.exitAndSum(11111111, "terminal1");
+        String actual = parkingServiceImpl.exit(11111111, "terminal1");
 
         // assert
         Assertions.assertEquals(expected, actual);

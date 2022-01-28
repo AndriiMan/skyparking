@@ -41,7 +41,7 @@ public class MainController {
     @ResponseBody
     public ResponseEntity<String> checkTalon(@RequestParam int number, String machineName) {
         try {
-            String s = String.valueOf(parkingServiceImpl.exitAndSum(number,machineName));
+            String s = String.valueOf(parkingServiceImpl.exit(number,machineName));
             return new ResponseEntity<>(s, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

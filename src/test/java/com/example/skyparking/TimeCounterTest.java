@@ -24,9 +24,9 @@ class TimeCounterTest {
     String dateTime;
     SimpleDateFormat simpleDateFormat;
 
-    @SneakyThrows
+
     @BeforeEach
-    void init() {
+    void init() throws ParseException {
         talon.setVip(true);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         LocalDateTime timeForNow = LocalDateTime.now();
@@ -47,7 +47,6 @@ class TimeCounterTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    @SneakyThrows
     @Test
     void isTwoHour() {
         calendar.add(Calendar.MINUTE, -120);
@@ -61,7 +60,6 @@ class TimeCounterTest {
 
     }
 
-    @SneakyThrows
     @Test
     void isTwoHourAndTwoMinutes() {
         calendar.add(Calendar.MINUTE, -122);
