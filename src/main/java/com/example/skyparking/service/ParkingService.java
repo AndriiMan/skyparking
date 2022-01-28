@@ -1,5 +1,7 @@
 package com.example.skyparking.service;
 
+import com.example.skyparking.entity.Talon;
+
 public interface ParkingService {
-    void createTalon(String terminalName);
+    Talon createTalon(String terminalName);
 }

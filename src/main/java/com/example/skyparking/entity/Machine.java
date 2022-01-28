@@ -11,28 +11,29 @@ import java.util.List;
 @Table(name = "Machine")
 @Getter
 @Setter
-public class Terminal {
+public class Machine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int pricePerHour;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "price_for_talons_id")
+    private PriceForTalons priceForTalons;
 
     private String name;
 
     @OneToMany(
-            mappedBy = "terminal",
+            mappedBy = "machine",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Talon> talonList = new ArrayList<>();
 
-    public Terminal() {
+    public Machine() {
 
     }
 
-    public Terminal(int pricePerHour, String name) {
-        this.pricePerHour = pricePerHour;
+    public Machine(String name) {
         this.name = name;
     }
 
