@@ -30,15 +30,17 @@ public class PriceForTalons {
     int priceMoreThenHour;
     int pricePerTwelveHour;
     int pricePerDay;
+    int priceForLostTalon;
 
     public PriceForTalons() {
 
     }
 
-    public PriceForTalons(int priceLessHour, int priceMoreThenHour, int pricePerTwelveHour, int pricePerDay) {
+    public PriceForTalons(int priceLessHour, int priceMoreThenHour, int pricePerTwelveHour, int pricePerDay, int priceForLostTalon) {
         this.priceLessHour = priceLessHour;
         this.priceMoreThenHour = priceMoreThenHour;
         this.pricePerTwelveHour = pricePerTwelveHour;
         this.pricePerDay = pricePerDay;
+        this.priceForLostTalon = priceForLostTalon;
     }
 }

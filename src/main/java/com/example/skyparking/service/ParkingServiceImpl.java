@@ -1,26 +1,11 @@
 package com.example.skyparking.service;
 
 import com.example.skyparking.TimeCounter;
-import com.example.skyparking.entity.PriceForTalons;
 import com.example.skyparking.entity.Talon;
 import com.example.skyparking.entity.Machine;
 import com.example.skyparking.repository.ClientRepository;
-import com.example.skyparking.repository.PriceForTalonsRepository;
 import com.example.skyparking.repository.TalonRepository;
-import com.example.skyparking.repository.MachineRepository;
-import com.example.skyparking.rules.RuleTime;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.Math.abs;
 
 @Service
 public class ParkingServiceImpl implements ParkingService {
@@ -52,14 +37,29 @@ public class ParkingServiceImpl implements ParkingService {
 
     public String exit(int number, String machine) {
         TimeCounter timeCounter = new TimeCounter();
+        if (number == 0) {
+            //TODO how to improve?
+            if (machineService.getMachineByName(machine) == null) {
+                return "there isn't such machine";
+            } else {
+                Talon lostTalon = new Talon();
+                lostTalon.setNumber(0);
+                lostTalon.setMachine(machineService.getMachineByName(machine));
+                System.out.println("exit with num 0");
+                return String.valueOf(timeCounter.sumUpPrice(lostTalon));
+            }
+        }
         if (machineService.checkTalonIsInMachine(number, machine)) {
             Talon talon = talonRepository.findByNumber(number);
-            talon.setActive(false);
-            talonRepository.save(talon);
-            return String.valueOf(timeCounter.sumUpPrice(talon));
+            if (talon.isActive()) {
+                talon.setActive(false);
+                talonRepository.save(timeCounter.sumUpPrice(talon));
+                return String.valueOf(talon.getPriceSum());
+            } else {
+                return "Talon is not active";
+            }
         } else {
             return "there is not talon in this terminal";
         }
     }
-
 }

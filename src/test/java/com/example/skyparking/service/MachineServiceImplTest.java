@@ -42,7 +42,8 @@ class MachineServiceImplTest {
         MachineService machineService = new MachineServiceImpl(machineRepository);
         Machine machineMock = new Machine();
         machineMock.setName("machineMock");
-        PriceForTalons newPriceForTalons = new PriceForTalons(12, 12, 12, 12);
+        PriceForTalons newPriceForTalons = new PriceForTalons(12, 12,
+                12, 12,1);
         machineMock.setId(1L);
         machineMock.setTalonList(new ArrayList<>());
         machineMock.setPriceForTalons(newPriceForTalons);
@@ -58,7 +59,8 @@ class MachineServiceImplTest {
         // arrange
         MachineServiceImpl machineService = new MachineServiceImpl(machineRepository);
         Machine machineMock = new Machine("testTermainalMock");
-        PriceForTalons newPriceForTalons = new PriceForTalons(12, 12, 12, 12);
+        PriceForTalons newPriceForTalons = new PriceForTalons(12, 12,
+                12, 12,1);
         machineMock.setId(1L);
         Talon talon1 = new Talon();
         Talon talon2 = new Talon();

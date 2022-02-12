@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PriceForTalonsRepository extends JpaRepository<PriceForTalons, Long> {
-    PriceForTalons findBypriceLessHourAndpriceMoreThenHour(int priceLessHour, int priceMoreThenHour);
+
 }

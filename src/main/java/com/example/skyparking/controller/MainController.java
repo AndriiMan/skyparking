@@ -18,7 +18,7 @@ public class MainController {
         this.machineService = machineService;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
     @ResponseBody
     public String homePage() {
         return "home";
@@ -37,14 +37,15 @@ public class MainController {
         }
     }
 
-    @RequestMapping(value = "/checkTalon", method = RequestMethod.GET)
+    @RequestMapping(value = "/checkTalon", method = RequestMethod.GET, params = {"number", "machineName"})
     @ResponseBody
     public ResponseEntity<String> checkTalon(@RequestParam int number, String machineName) {
         try {
-            String s = String.valueOf(parkingServiceImpl.exit(number,machineName));
+            String s = String.valueOf(parkingServiceImpl.exit(number, machineName));
             return new ResponseEntity<>(s, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

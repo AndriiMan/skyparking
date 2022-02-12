@@ -43,7 +43,7 @@ class TimeCounterTest {
         talon.setTimeIn(dateTime);
 
         double expected = 25;
-        double actual = timeCounter.sumUpPrice(talon);
+        double actual = timeCounter.sumUpPrice(talon).getPriceSum();
         Assertions.assertEquals(expected, actual);
     }
 
@@ -54,7 +54,7 @@ class TimeCounterTest {
         talon.setTimeIn(dateTime);
 
         double expected = 40;
-        double actual = timeCounter.sumUpPrice(talon);
+        double actual = timeCounter.sumUpPrice(talon).getPriceSum();
 
         Assertions.assertEquals(expected, actual);
 
@@ -68,7 +68,7 @@ class TimeCounterTest {
         talon.setTimeIn(talonTime);
 
         double expected = 60;
-        double actual = timeCounter.sumUpPrice(talon);
+        double actual = timeCounter.sumUpPrice(talon).getPriceSum();
 
         Assertions.assertEquals(expected, actual);
     }

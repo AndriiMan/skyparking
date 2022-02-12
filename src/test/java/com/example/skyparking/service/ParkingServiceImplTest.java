@@ -29,7 +29,6 @@ class ParkingServiceImplTest {
     private ParkingServiceImpl parkingServiceImpl;
     private MachineServiceImpl machineService;
 
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -64,7 +63,8 @@ class ParkingServiceImplTest {
         talon1.setActive(true);
 
         Machine machine = new Machine("terminal1");
-        PriceForTalons newPriceForTalons = new PriceForTalons(60, 50, 300, 500);
+        PriceForTalons newPriceForTalons = new PriceForTalons(60, 50,
+                300, 500, 1);
         machine.setPriceForTalons(newPriceForTalons);
         List<Talon> talonList = new ArrayList<>();
         talonList.add(talon1);
@@ -93,7 +93,8 @@ class ParkingServiceImplTest {
         talon1.setActive(true);
 
         Machine machine = new Machine("terminal1");
-        PriceForTalons newPriceForTalons = new PriceForTalons(60, 50, 300, 500);
+        PriceForTalons newPriceForTalons = new PriceForTalons(60, 50,
+                300, 500, 1);
         machine.setPriceForTalons(newPriceForTalons);
         List<Talon> talonList = new ArrayList<>();
         talonList.add(talon1);
